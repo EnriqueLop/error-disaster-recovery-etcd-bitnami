@@ -1,0 +1,31 @@
+apiVersion: helm.fluxcd.io/v1
+kind: HelmRelease
+metadata:
+  name: etcd
+spec:
+  releaseName: etcd
+  chart:
+    repository: https://charts.bitnami.com/bitnami
+    version: 6.6.1
+    name: etcd
+  values:
+    image:
+      debug: true
+    auth:
+      enabled: true
+      rbac:
+        rootPassword: "pass"
+    persistence:
+      enabled: true
+      size: 500Mi
+    disasterRecovery:
+      enabled: true
+      cronjob:
+        schedule: "*/1 * * * *"
+      pvc:
+        size: 500Mi
+        storageClassName: efs-sc-etcd
+
+
+# ETCDCTL_API=3 etcdctl --user=root --password=pass put key1 "kay1"
+# ETCDCTL_API=3 etcdctl --user=root --password=pass get "" --prefix=true
